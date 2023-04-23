@@ -6,15 +6,15 @@ class Parser():
     def __init__(self):
         self.pg = ParserGenerator(
             # A list of all token names accepted by the parser.
-            ['ekteb',
-             'ken',
-             'mekenech ken',
-             'mekenech',
-             'karrer',
-             'medem',
-             '3dad',
-             'jomla',
-             '3awed_medem',
+            ['print',
+             'if',
+             'else if',
+             'else',
+             'for',
+             'while',
+             'int',
+             'string',
+             'do_while',
              'LPAREN',
              'RPAREN',
              'COMMA',
@@ -22,7 +22,8 @@ class Parser():
              'PLUS',
              'MINUS',
              'SLASH',
-             'NUMBER']
+             'NUMBER'
+            ]
         )
 
     def get_parser(self):
@@ -42,19 +43,21 @@ class Parser():
                 return Sub(left, right)
             elif operator.gettokentype() == 'SLASH':
                 return Divide(left, right)
-          
         def number(p):
             return Number(p[0].value)   
 
-        @self.pg.production('program : ekteb LPAREN expression RPAREN SEMICOLON')
+        @self.pg.production('program : print LPAREN expression RPAREN SEMICOLON')
         def program_production(p):
             return program(p)
 
-        @self.pg.production('expression : expression PLUS expression')
-        @self.pg.production('expression : expression MINUS expression')
-        def expression_production(p):
+        @self.pg.production('expression : expression PLUS NUMBER')
+        
+        def expression_production_sum(p):
             return expression(p)
 
+        @self.pg.production('expression : expression MINUS NUMBER')
+        def expression_production_sub(p):
+            return expression(p)
         @self.pg.production('expression : NUMBER')
         def number_production(p):
             return number(p)
