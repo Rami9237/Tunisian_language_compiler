@@ -8,21 +8,21 @@ class Parser():
             # A list of all token names accepted by the parser.
             ['print',
              'if',
+             'DIVIDE',
+             'PLUS',
+             'MINUS',
+             'MULT',
              'else if',
              'else',
              'for',
              'while',
-             'int',
+             'aadad',
              'string',
              'do_while',
              'LPAREN',
              'RPAREN',
              'COMMA',
              'SEMICOLON',
-             'PLUS',
-             'MINUS',
-             'MULT',
-             'DIVIDE'
              'NUMBER',
              'CODE',
              'IDENTIFIER',
@@ -72,14 +72,14 @@ class Parser():
         @self.pg.production('instr : IDENTIFIER AFFECT expression SEMICOLON')
         def program_production(p):
             return 0
-        @self.pg.production('instr : int IDENTIFIER SEMICOLON')
+        @self.pg.production('instr : aadad IDENTIFIER SEMICOLON')
         def program_production(p):
             return 0
         @self.pg.production('instr : ')
         def program_production(p):
             return 0
         
-        @self.pg.production('instr : int IDENTIFIER AFFECT expression SEMICOLON')
+        @self.pg.production('instr : aadad IDENTIFIER AFFECT expression SEMICOLON')
         def program_production(p):
             return 0
         @self.pg.production('instr : string IDENTIFIER AFFECT expression SEMICOLON')

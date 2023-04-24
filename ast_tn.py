@@ -30,4 +30,8 @@ class Print():
         self.value = value
 
     def eval(self):
-        Print(self.value.eval())
+        print("FDSQDS")
+        if (not(hasattr(self.value,'left'))):
+            print(self.value[0].value[1:-1])
+        else:
+            print(self.value.eval())

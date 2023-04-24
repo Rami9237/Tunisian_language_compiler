@@ -20,13 +20,14 @@ class Lexer():
         self.lexer.add('COMPARE',r'==')
         self.lexer.add('DIFFERENT',r'!=')
         self.lexer.add('MULT',r'\*')
-        self.lexer.add('DIVIDE',r'/')
+        self.lexer.add('DIVIDE',r'\/')
+      
         # for
         self.lexer.add('for',r'karrer')
         # while
         self.lexer.add('while',r'madem')
         # int
-        self.lexer.add('int',r'aadad')
+        self.lexer.add('aadad',r'aadad')
         # string
         self.lexer.add('string',r'jomla')
         self.lexer.add('STRING', r'"[^"]*"|\'[^\']*\'')
