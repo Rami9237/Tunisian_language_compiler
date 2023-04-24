@@ -43,7 +43,6 @@ class Parser():
                 return Sub(left, right)
             elif operator.gettokentype() == 'SLASH':
                 return Divide(left, right)
-          
         def number(p):
             return Number(p[0].value)   
 
@@ -51,17 +50,20 @@ class Parser():
         def program_production(p):
             return program(p)
 
-        @self.pg.production('expression : expression PLUS expression')
-        @self.pg.production('expression : expression MINUS expression')
-        def expression_production(p):
+        @self.pg.production('expression : expression PLUS NUMBER')
+        
+        def expression_production_sum(p):
             return expression(p)
 
+        @self.pg.production('expression : expression MINUS NUMBER')
+        def expression_production_sub(p):
+            return expression(p)
         @self.pg.production('expression : NUMBER')
         def number_production(p):
             return number(p)
         @self.pg.production('expression : STRING')
         def string_production(p):
-            return str(p)
+            return p
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)
