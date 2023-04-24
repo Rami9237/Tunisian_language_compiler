@@ -1,4 +1,3 @@
-import re
 
 class Number():
     def __init__(self, value):
@@ -32,8 +31,7 @@ class Print():
         self.value = value
 
     def eval(self):
-        if isinstance(self.value,str):
-           print(self.value[1:-1]) 
-           
+        if (not(hasattr(self.value,'left'))):
+            print(self.value[0].value[1:-1])
         else:
             print(self.value.eval())

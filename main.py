@@ -2,7 +2,7 @@ from lexer_tn import Lexer
 from parser_tn import Parser
 
 text_input = """
-ekteb("test");
+ekteb('test');
 """
 
 lexer = Lexer().get_lexer()

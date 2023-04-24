@@ -63,7 +63,7 @@ class Parser():
             return number(p)
         @self.pg.production('expression : STRING')
         def string_production(p):
-            return str(p)
+            return p
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)
