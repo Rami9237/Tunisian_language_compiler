@@ -13,12 +13,14 @@ class Lexer():
         self.lexer.add('else if',r'mekenech_ken')
         self.lexer.add('else',r'mekenech')
         self.lexer.add('CODE',r'code')
-        self.lexer.add('identifier',r'("_")?[a-zA-Z]+([0-9]|[a-zA-Z])*')
+        self.lexer.add('IDENTIFIER',r'("_")?[a-zA-Z]+([0-9]|[a-zA-Z])*')
         self.lexer.add('L_CB',r'\{')
         self.lexer.add('R_CB',r'\}')
         self.lexer.add('AFFECT',r'=')
         self.lexer.add('COMPARE',r'==')
         self.lexer.add('DIFFERENT',r'!=')
+        self.lexer.add('MULT',r'\*')
+        self.lexer.add('DIVIDE',r'/')
         # for
         self.lexer.add('for',r'karrer')
         # while
@@ -38,7 +40,6 @@ class Lexer():
         self.lexer.add('SEMICOLON', r'\;')
         self.lexer.add('PLUS',r'\s*\+')
         self.lexer.add('MINUS',r'\s*\-')
-        self.lexer.add('SLASH',r'\s*\/')
         self.lexer.add('FROM',r'men')
         self.lexer.add('TO',r'ila')
         self.lexer.ignore(r'\s+')

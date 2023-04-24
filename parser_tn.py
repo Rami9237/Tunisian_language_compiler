@@ -21,8 +21,19 @@ class Parser():
              'SEMICOLON',
              'PLUS',
              'MINUS',
-             'SLASH',
-             'NUMBER'
+             'MULT',
+             'DIVIDE'
+             'NUMBER',
+             'CODE',
+             'IDENTIFIER',
+             'L_CB',
+             'R_CB',
+             'AFFECT',
+             'COMPARE',
+             'DIFFERENT',
+             'STRING',
+             'TO',
+             'FROM'
             ]
         )
 
@@ -41,7 +52,7 @@ class Parser():
                 return Sum(left, right)
             elif operator.gettokentype() == 'MINUS':
                 return Sub(left, right)
-            elif operator.gettokentype() == 'SLASH':
+            elif operator.gettokentype() == 'DIVIDE':
                 return Divide(left, right)
         def number(p):
             return Number(p[0].value)   
@@ -64,6 +75,10 @@ class Parser():
         @self.pg.production('instr : int IDENTIFIER SEMICOLON')
         def program_production(p):
             return 0
+        @self.pg.production('instr : ')
+        def program_production(p):
+            return 0
+        
         @self.pg.production('instr : int IDENTIFIER AFFECT expression SEMICOLON')
         def program_production(p):
             return 0
