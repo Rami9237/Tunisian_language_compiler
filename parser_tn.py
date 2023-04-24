@@ -46,21 +46,62 @@ class Parser():
         def number(p):
             return Number(p[0].value)   
 
-        @self.pg.production('program : print LPAREN expression RPAREN SEMICOLON')
+        @self.pg.production('program : CODE IDENTIFIER L_CB instr R_CB')
         def program_production(p):
-            return program(p)
-
-        @self.pg.production('expression : expression PLUS NUMBER')
-        
+            return 0
+        @self.pg.production('instr : for IDENTIFIER FROM factor TO factor L_CB instr R_CB')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : if LPAREN expression COMPARE expression RPAREN L_CB instr R_CB')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : if LPAREN expression DIFFERENT expression RPAREN L_CB instr R_CB')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : IDENTIFIER AFFECT expression SEMICOLON')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : int IDENTIFIER SEMICOLON')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : int IDENTIFIER AFFECT expression SEMICOLON')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : string IDENTIFIER AFFECT expression SEMICOLON')
+        def program_production(p):
+            return 0
+        @self.pg.production('instr : print LPAREN expression RPAREN SEMICOLON')
+        def program_production(p):
+            return 0
+            
+        @self.pg.production('expression : expression PLUS term')
         def expression_production_sum(p):
             return expression(p)
 
-        @self.pg.production('expression : expression MINUS NUMBER')
+        @self.pg.production('expression : expression MINUS term')
         def expression_production_sub(p):
             return expression(p)
-        @self.pg.production('expression : NUMBER')
-        def number_production(p):
-            return number(p)
+        @self.pg.production('expression : term')
+        def term_production(p):
+            return 0
+        @self.pg.production('term : term MULT factor')
+        def term_production(p):
+            return 0
+        @self.pg.production('term : term DIVIDE factor')
+        def term_production(p):
+            return 0
+        @self.pg.production('term : factor')
+        def term_production(p):
+            return 0
+        @self.pg.production('factor : NUMBER')
+        def term_production(p):
+            return 0
+        @self.pg.production('factor : IDENTIFIER')
+        def term_production(p):
+            return 0
+        @self.pg.production('factor : STRING')
+        def term_production(p):
+            return 0
 
         @self.pg.error
         def error_handler(token):
