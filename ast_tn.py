@@ -1,3 +1,5 @@
+import re
+
 class Number():
     def __init__(self, value):
         self.value = value
@@ -14,16 +16,16 @@ class BinaryOp():
 
 class Sum(BinaryOp):
     def eval(self):
-        return self.left.eval() + self.right.eval()
+        return self.left.value + self.right.value
 
 
 class Sub(BinaryOp):
     def eval(self):
-        return self.left.eval() - self.right.eval()
+        return int(self.left.value) - int(self.right.value)
     
 class Divide(BinaryOp):
     def eval(self):
-        return self.left.eval() / self.right.eval()
+        return int(self.left.value) / self.right.value
 
 class Print():
     def __init__(self, value):
@@ -31,6 +33,7 @@ class Print():
 
     def eval(self):
         if isinstance(self.value,str):
-            print(self.value)
+           print(self.value[1:-1]) 
+           
         else:
             print(self.value.eval())
