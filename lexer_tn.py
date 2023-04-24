@@ -7,23 +7,25 @@ class Lexer():
 
     def _add_tokens(self):
         # Print
-        self.lexer.add('ekteb', r'print')
+        self.lexer.add('EKTEB', r'ekteb')
         # if else else if
-        self.lexer.add('ken',r'if')
-        self.lexer.add('mekenech ken',r'else if')
-        self.lexer.add('mekenech',r'else')
+        self.lexer.add('KEN',r'ken')
+        self.lexer.add('MEKENECH_KEN',r'mekenech\s+ken')
+        self.lexer.add('MEKENECH',r'mekenech')
         # for
-        self.lexer.add('karrer',r'for')
+        self.lexer.add('KARRER',r'karrer')
         # while
-        self.lexer.add('medem',r'while')
+        self.lexer.add('WHILE',r'while')
         # int
-        self.lexer.add('3dad',r'int')
+        self.lexer.add('3DAD',r'3dad')
         # string
-        self.lexer.add('jomla',r'string')
+        self.lexer.add('JOMLA',r'jomla')
         # do while
-        self.lexer.add('3awed_medem', r'do\s+while')
+        self.lexer.add('3AWED_MEDEM', r'do\s+while')
         # Number
         self.lexer.add('NUMBER', r'\d+')
+        self.lexer.add('STRING', r'"[^"]*"|\'[^\']*\'')
+
 
         self.lexer.add('LPAREN', r'\(')
         self.lexer.add('RPAREN', r'\)')

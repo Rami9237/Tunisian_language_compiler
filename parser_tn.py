@@ -6,15 +6,15 @@ class Parser():
     def __init__(self):
         self.pg = ParserGenerator(
             # A list of all token names accepted by the parser.
-            ['ekteb',
-             'ken',
-             'mekenech ken',
-             'mekenech',
-             'karrer',
-             'medem',
-             '3dad',
-             'jomla',
-             '3awed_medem',
+            ['EKTEB',
+             'KEN',
+             'MEKENECH_KEN',
+             'MEKENECH',
+             'KARRER',
+             'MEDEM',
+             '3DAD',
+             'JOMLA',
+             '3AWED_MEDEM',
              'LPAREN',
              'RPAREN',
              'COMMA',
@@ -22,7 +22,8 @@ class Parser():
              'PLUS',
              'MINUS',
              'SLASH',
-             'NUMBER']
+             'NUMBER',
+             'STRING']
         )
 
     def get_parser(self):
@@ -46,7 +47,7 @@ class Parser():
         def number(p):
             return Number(p[0].value)   
 
-        @self.pg.production('program : ekteb LPAREN expression RPAREN SEMICOLON')
+        @self.pg.production('program : EKTEB LPAREN expression RPAREN SEMICOLON')
         def program_production(p):
             return program(p)
 
@@ -58,7 +59,9 @@ class Parser():
         @self.pg.production('expression : NUMBER')
         def number_production(p):
             return number(p)
-
+        @self.pg.production('expression : STRING')
+        def string_production(p):
+            return str(p)
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)

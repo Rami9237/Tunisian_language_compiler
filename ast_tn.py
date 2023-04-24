@@ -30,4 +30,7 @@ class Print():
         self.value = value
 
     def eval(self):
-        print(self.value.eval())
+        if isinstance(self.value,str):
+            print(self.value)
+        else:
+            print(self.value.eval())
