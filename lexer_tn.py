@@ -13,7 +13,7 @@ class Lexer():
         self.lexer.add('else if',r'mekenech_ken')
         self.lexer.add('else',r'mekenech')
         self.lexer.add('CODE',r'code')
-        self.lexer.add('IDENTIFIER',r'("_")?[a-zA-Z]+([0-9]|[a-zA-Z])*')
+       
         self.lexer.add('L_CB',r'\{')
         self.lexer.add('R_CB',r'\}')
         self.lexer.add('AFFECT',r'=')
@@ -43,6 +43,7 @@ class Lexer():
         self.lexer.add('MINUS',r'\s*\-')
         self.lexer.add('FROM',r'men')
         self.lexer.add('TO',r'ila')
+        self.lexer.add('IDENTIFIER',r'("_")?[a-zA-Z]+([0-9]|[a-zA-Z])*')
         self.lexer.ignore(r'\s+')
     def get_lexer(self):
         self._add_tokens()

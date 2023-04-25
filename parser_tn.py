@@ -1,5 +1,5 @@
 from rply import ParserGenerator
-from ast_tn import Divide, Number, Sum, Sub, Print
+from ast_tn import Divide, Number, Sum, Sub, Print,Tabulations
 
 
 class Parser():
@@ -36,6 +36,8 @@ class Parser():
              'FROM'
             ]
         )
+        self.arr = []
+        self.counter = 0
 
     def get_parser(self):
         return self.pg.build()
@@ -59,10 +61,24 @@ class Parser():
 
         @self.pg.production('program : CODE IDENTIFIER L_CB instr R_CB')
         def program_production(p):
-            return 0
+            self.arr.append(p[1].value)
         @self.pg.production('instr : for IDENTIFIER FROM factor TO factor L_CB instr R_CB')
         def program_production(p):
-            return 0
+            try:
+                self.counter = self.counter + 1
+                tabulations = Tabulations(self.counter)
+                self.arr.index(p[2])
+                print(p[8])
+                if (p[4].gettokentype == 'IDENTIFIER'):
+                    self.arr.index(p[4])
+                if(p[6].gettokentype == 'IDENTIFIER'):
+                    self.arr.index(p[6])
+                
+                instructions = instructions + Tabulations +"for " + p[2] + " in range("+p[4]+","+p[6]+"):"
+                
+            except ValueError:
+                print("Undeclared Identifier")
+
         @self.pg.production('instr : if LPAREN expression COMPARE expression RPAREN L_CB instr R_CB')
         def program_production(p):
             return 0
