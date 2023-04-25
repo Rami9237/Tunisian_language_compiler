@@ -13,7 +13,7 @@ class Lexer():
         self.lexer.add('MEKENECH_KEN',r'mekenech\s+ken')
         self.lexer.add('MEKENECH',r'mekenech')
         # for
-        self.lexer.add('KARRER',r'karrer')
+        self.lexer.add('FOR',r'karrer')
         # while
         self.lexer.add('WHILE',r'while')
         # int
@@ -26,7 +26,8 @@ class Lexer():
         self.lexer.add('NUMBER', r'\d+')
         self.lexer.add('STRING', r'"[^"]*"|\'[^\']*\'')
 
-
+        self.lexer.add('L_CB',r'\{')
+        self.lexer.add('R_CB',r'\}')
         self.lexer.add('LPAREN', r'\(')
         self.lexer.add('RPAREN', r'\)')
         self.lexer.add('COMMA', r'\,')
@@ -34,7 +35,9 @@ class Lexer():
         self.lexer.add('PLUS',r'\s*\+')
         self.lexer.add('MINUS',r'\s*\-')
         self.lexer.add('SLASH',r'\s*\/')
-        
+        self.lexer.add('FROM',r'men')
+        self.lexer.add('TO',r'ila')
+        self.lexer.add('IDENTIFIER',r'("_")?[a-zA-Z]+([0-9]|[a-zA-Z])*')        
         self.lexer.ignore(r'\s+')
 
     def get_lexer(self):
