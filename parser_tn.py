@@ -118,7 +118,7 @@ class Parser():
             self.instructions.append(p[1].value + "= None")
         @self.pg.production('instr : ')
         def program_production(p):
-            return None;
+            return None
         @self.pg.production('instr : aadad IDENTIFIER AFFECT expression SEMICOLON instr')
         def program_production(p):
             self.instructions.append(p[1].value + "=" + p[3].value)
