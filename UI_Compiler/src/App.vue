@@ -22,7 +22,8 @@
             <v-col :cols="12" :md="5">
               <div class="textarea-cont">
                 <h2 class="green-dark">Output</h2>
-                <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true"  disabled></v-textarea>
+                <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true" auto-grow height="200"></v-textarea>
+
               </div>
             </v-col>
           </Transition>

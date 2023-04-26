@@ -15,8 +15,9 @@ def code_compiler(text_input):
     pg = Parser()
     pg.parse()
     parser = pg.get_parser()
-    parser.parse(tokens)
-    
+    return parser.parse(tokens)
+   
+
 
 @app.route('/read_input',methods=['POST'])
 def read():
@@ -24,8 +25,18 @@ def read():
     print(data.get)
     language_input = data.get('code') # Get the value of the 'code' property from the JSON object
     if language_input:
-        result = code_compiler(language_input) # Call your code_compiler function with the input text
-        return 'Success'
+        result = code_compiler(language_input)
+        return result
+    else:
+        return 'Please enter the code you want to convert.'
+@app.route('/read_code',methods=['POST'])
+def read():
+    data = request.json 
+    print(data.get)
+    language_input = data.get('code') # Get the value of the 'code' property from the JSON object
+    if language_input:
+        code_py,result = code_compiler(language_input)
+        return code_py
     else:
         return 'Please enter the code you want to convert.'
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 from rply import ParserGenerator
 from ast_tn import Divide, Number, Sum, Sub, Print,Token
-
+import io
+import sys
 
 class Parser():
     def __init__(self):
@@ -35,7 +36,7 @@ class Parser():
         self.arr = []
         self.instructions = []
         self.denom = []
-
+        self.code=""
     def get_parser(self):
         return self.pg.build()
 
@@ -68,15 +69,19 @@ class Parser():
                     raise ValueError('Les variables suivantes doivent être déclarées :',c)
             else:
                 c = 0
-                code = ""
                 tabs = ""
                 while (len(self.instructions) != 0 ):
                     x = self.instructions.pop()
-                    code = code + tabs + x + "\n"
+                    self.code = self.code + tabs + x + "\n"
                     li = list(x.split(" "))
                     if (li[0] == "for" or li[0] == "if"):
                         tabs = tabs + " \t "
-                exec(code)
+                output = io.StringIO()
+                sys.stdout = output                        
+                exec(self.code)
+                result = output.getvalue()
+                
+                return self.code,result
 
         @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB')
         def program_production(p):
