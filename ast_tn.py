@@ -11,14 +11,9 @@ class BinaryOp():
         self.left = left
         self.right = right
 
-class Tabulations():
+class Token():
     def __init__(self,value):
         self.value = value
-    def eval(self):
-        for i in range (0,self.value):
-            c = c+ '\t'
-        c = c + " "
-        return c
 class Sum(BinaryOp):
     def eval(self):
         return self.left.value + self.right.value
