@@ -1,5 +1,5 @@
 from rply import ParserGenerator
-from ast_tn import Divide, Number, Sum, Sub, Print,Tabulations
+from ast_tn import Divide, Number, Sum, Sub, Print,Token
 
 
 class Parser():
@@ -33,8 +33,8 @@ class Parser():
             ]
         )
         self.arr = []
-        self.counter = 0
         self.instructions = []
+        self.denom = []
 
     def get_parser(self):
         return self.pg.build()
@@ -94,27 +94,18 @@ class Parser():
 
         @self.pg.production('instr : if LPAREN expression COMPARE expression RPAREN L_CB instr R_CB')
         def program_production(p):
-            print(p[2])
-            if (p[2].gettokentype() == 'IDENTIFIER'):
-                c = p[2].value
-            else:
-                c = p[2] 
-            print(p[4])
-            self.instructions.append("if (" + c + "==" + p[4] + "):")
+            self.instructions.append("if (" + p[2].value + "==" + p[4].value + "):")
         @self.pg.production('instr : if LPAREN expression DIFFERENT expression RPAREN L_CB instr R_CB')
         def program_production(p):
-            if (p[2].gettokentype() == 'IDENTIFIER'):
-                c = p[2].value
-            else:
-                c = p[2] 
-            print(p[4])
-            self.instructions.append("if (" + c + "!=" + p[4] + "):")
+            self.instructions.append("if (" + p[2].value + "!=" + p[4].value + "):")
         @self.pg.production('instr : IDENTIFIER AFFECT expression SEMICOLON instr')
         def program_production(p):
-            self.instructions.append(p[0].value + "=" + p[2])
+            self.instructions.append(p[0].value + "=" + p[2].value)
         @self.pg.production('instr : aadad IDENTIFIER SEMICOLON instr')
         def program_production(p):
-            self.arr.remove(p[1].value)
+            e = exists(self.arr,p[1].value)
+            if (e):
+                self.arr.remove(p[1].value)
             self.instructions.append(p[1].value + "= None")
         @self.pg.production('instr : ')
         def program_production(p):
@@ -122,76 +113,57 @@ class Parser():
         @self.pg.production('instr : aadad IDENTIFIER AFFECT expression SEMICOLON instr')
         def program_production(p):
             self.instructions.append(p[1].value + "=" + p[3].value)
-
-            self.arr.remove(p[1].value)
+            e = exists(self.arr,p[1].value)
+            if(e):
+                self.arr.remove(p[1].value)
         @self.pg.production('instr : string IDENTIFIER AFFECT expression SEMICOLON instr')
         def program_production(p):
-            self.instructions.append(p[1].value + "=" + p[3])
-            self.arr.pop(p[1].value)
+            self.instructions.append(p[1].value + "=" + p[3].value)
+            e = exists(self.arr,p[1].value)
+            if (e):
+                self.arr.pop(p[1].value)
         @self.pg.production('instr : print LPAREN expression RPAREN SEMICOLON instr')
         def program_production(p):
-            if(isinstance(p[2],str)):
-                self.instructions.append("print("+p[2]+")")
-            else:
-                self.instructions.append("print("+p[2].value+")")
+            self.instructions.append("print("+p[2].value+")")
+            return None
         @self.pg.production('expression : expression PLUS term')
         def expression_production_sum(p):
-            if (isinstance(p[0],str)):
-                return p[0] + '+' + p[2].value
-            elif (isinstance(p[0],str) and (isinstance(p[2],str))):
-                return p[0] + '+' + p[2]
-            elif (isinstance(p[2],str)):
-                return p[0].value + '+' + p[2]
-            else:
-                return p[0].value + '+' + p[2].value
+            print(p[2])
+            return Token(p[0].value + '+' + p[2].value)
         @self.pg.production('expression : expression MINUS term')
         def expression_production_sub(p):
-            if (isinstance(p[0],str)):
-                return p[0] + '-' + p[2].value
-            elif (isinstance(p[0],str) and (isinstance(p[2],str))):
-                return p[0] + '-' + p[2]
-            elif (isinstance(p[2],str)):
-                return p[0].value + '-' + p[2]
-            else:
-                return p[0].value + '-' + p[2].value
+            return Token(p[0].value + '-' + p[2].value)
         @self.pg.production('expression : term')
         def term_production(p):
-            return p[0]
+            return Token(p[0].value)
         @self.pg.production('term : term MULT factor')
         def term_production(p):
-            if (isinstance(p[0],str)):
-                return p[0] + '*' + p[2].value
-            elif (isinstance(p[0],str) and (isinstance(p[2],str))):
-                return p[0] + '*' + p[2]
-            elif (isinstance(p[2],str)):
-                return p[0].value + '*' + p[2]
-            else:
-                return p[0].value + '*' + p[2].value
+            return Token(p[0].value + '*' + p[2].value)
         @self.pg.production('term : term DIVIDE factor')
         def term_production(p):
-            if (isinstance(p[0],str)):
-                return p[0] + '/' + p[2].value
-            elif (isinstance(p[0],str) and (isinstance(p[2],str))):
-                return p[0] + '/' + p[2]
-            elif (isinstance(p[2],str)):
-                return p[0].value + '/' + p[2]
-            else:
-                return p[0].value + '/' + p[2].value
+                        print(p[2].value)
+                        return Token(p[0].value + '/' + p[2].value)                     
         @self.pg.production('term : factor')
         def term_production(p):
-            return p[0]
+            return Token(p[0].value)
         @self.pg.production('factor : NUMBER')
         def term_production(p):
-            return p[0]
+            return Token(p[0].value)
         @self.pg.production('factor : IDENTIFIER')
         def term_production(p):
             e = exists(self.arr,p[0].value)
             if (e == False):
                 self.arr.append(p[0].value)
-            return p[0]
+            return Token(p[0].value)
         @self.pg.production('factor : STRING')
         def term_production(p):
-            return p[0]
+            return Token(p[0].value)
+        @self.pg.production('factor : MINUS factor' )
+        def term_production(p):
+            return  Token(p[0].value + p[1].value)
+        @self.pg.production('factor : LPAREN expression RPAREN')
+        def term_production(p):
+            return Token('(' + p[1].value + ')')
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)
