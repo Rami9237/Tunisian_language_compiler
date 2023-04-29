@@ -256,12 +256,8 @@ class Parser():
             return None
         @self.pg.production('STRINGS : STRING PLUS STRINGS')
         def program_production(p):
-
             return Token(p[0].value + "+" + p[2].value)
         @self.pg.production('STRINGS : STRING')
-        def program_production(p):
-            return Token(p[0].value)
-        @self.pg.production('STRINGS : IDENTIFIER')
         def program_production(p):
             return Token(p[0].value)
         @self.pg.error
