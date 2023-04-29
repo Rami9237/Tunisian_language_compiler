@@ -5,8 +5,10 @@ class Number():
 
     def eval(self):
         return int(self.value)
-
-
+class Instruction():
+    def __init__(self,value,itype):
+        self.value = value
+        self.itype = itype
 class BinaryOp():
     def __init__(self, left, right):
         self.left = left
