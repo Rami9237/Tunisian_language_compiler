@@ -12,7 +12,9 @@ class BinaryOp():
         self.left = left
         self.right = right
 
-
+class Token():
+    def __init__(self,value):
+        self.value = value
 class Sum(BinaryOp):
     def eval(self):
         return self.left.value + self.right.value
@@ -31,7 +33,8 @@ class Print():
         self.value = value
 
     def eval(self):
-        if (not(hasattr(self.value,'left'))):
+        print(self.value)
+        if (type(self.value) == str):
             print(self.value[0].value[1:-1])
         else:
             print(self.value.eval())
