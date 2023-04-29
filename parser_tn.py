@@ -1,6 +1,10 @@
 from rply import ParserGenerator
+
 from ast_tn import Divide, Number, Sum, Sub, Print,Token,Instruction
 import re
+import io
+import sys
+
 
 class Parser():
     def __init__(self):
@@ -34,8 +38,11 @@ class Parser():
         self.declarations = []
         self.instructions = []
         self.denom = []
+
         self.vartypes = {}
         self.operations = []
+
+        self.code=""
     def get_parser(self):
         return self.pg.build()
     def checkTypes(self,types,operators):
@@ -103,16 +110,20 @@ class Parser():
                         raise TypeError("TypeMismatch pour l'expression ",x)
                 self.checkDiv(self.instructions,self.denom);
                 c = 0
-                code = ""
                 tabs = ""
                 while (len(self.instructions) != 0 ):
                     x = self.instructions.pop()
-                    code = code + tabs + x.value + "\n"
-                    li = list(x.value.split(" "))
+
+                    self.code = self.code + tabs + x + "\n"
+                    li = list(x.split(" "))
                     if (li[0] == "for" or li[0] == "if"):
                         tabs = tabs + " \t "
-                print(code)
-                exec(code)
+                output = io.StringIO()
+                sys.stdout = output                        
+                exec(self.code)
+                result = output.getvalue()
+                
+                return self.code,result
 
         @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB')
         def program_production(p):
