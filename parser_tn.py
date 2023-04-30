@@ -1,10 +1,6 @@
 from rply import ParserGenerator
-
 from ast_tn import Divide, Number, Sum, Sub, Print,Token,Instruction
 import re
-import io
-import sys
-
 
 class Parser():
     def __init__(self):
@@ -38,11 +34,8 @@ class Parser():
         self.declarations = []
         self.instructions = []
         self.denom = []
-
         self.vartypes = {}
         self.operations = []
-
-        self.code=""
     def get_parser(self):
         return self.pg.build()
     def checkTypes(self,types,operators):
@@ -90,9 +83,6 @@ class Parser():
                 c = ','.join(self.declarations) 
                 raise ValueError('Les variables suivantes doivent être déclarées : '+ c)
             else:
-                print(self.operations)
-                for instruction in self.instructions:
-                    print(instruction.value)
                 patternType = r'"[^"]*"|[a-zA-Z_]\w*|\d+'
                 patternOperation = r'[-+*/]'
                 while (self.operations != []):
@@ -102,28 +92,20 @@ class Parser():
                     matchesOperation = re.findall(patternOperation,x)
                     for i in range(0,len(matchesType)):
                         matchesType[i] = self.vartypes[matchesType[i]]
-                    print(x)
-                    print(matchesType)
-                    print(matchesOperation)
                     check = self.checkTypes(matchesType,matchesOperation)
                     if (not(check)):
                         raise TypeError("TypeMismatch pour l'expression ",x)
                 self.checkDiv(self.instructions,self.denom);
                 c = 0
+                code = ""
                 tabs = ""
                 while (len(self.instructions) != 0 ):
                     x = self.instructions.pop()
-
-                    self.code = self.code + tabs + x + "\n"
-                    li = list(x.split(" "))
+                    code = code + tabs + x.value + "\n"
+                    li = list(x.value.split(" "))
                     if (li[0] == "for" or li[0] == "if"):
                         tabs = tabs + " \t "
-                output = io.StringIO()
-                sys.stdout = output                        
-                exec(self.code)
-                result = output.getvalue()
-                
-                return self.code,result
+                exec(code)
 
         @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB')
         def program_production(p):
@@ -159,6 +141,12 @@ class Parser():
             for variable in variables:
                 if(not(exists(self.declarations,variable))):
                     self.declarations.insert(0,variable)
+            self.instructions.append(Instruction("if (" + p[2].value + "!=" + p[4].value + "):","ref"))
+        @self.pg.production('instr : if LPAREN STRINGS COMPARE STRINGS RPAREN L_CB instr R_CB')
+        def program_production(p):
+            self.instructions.append(Instruction("if (" + p[2].value + "==" + p[4].value + "):","ref"))
+        @self.pg.production('instr : if LPAREN STRINGS DIFFERENT STRINGS RPAREN L_CB instr R_CB')
+        def program_production(p):
             self.instructions.append(Instruction("if (" + p[2].value + "!=" + p[4].value + "):","ref"))
         @self.pg.production('instr : IDENTIFIER AFFECT expression SEMICOLON instr')
         def program_production(p):
@@ -261,6 +249,18 @@ class Parser():
         @self.pg.production('factor : LPAREN expression RPAREN')
         def term_production(p):
             return Token('(' + p[1].value + ')')
+        @self.pg.production('instr : print LPAREN STRINGS RPAREN SEMICOLON instr')
+        def program_production(p):
+            self.operations.append(p[2].value)
+            self.instructions.append(Instruction("print("+p[2].value+")","ref"))
+            return None
+        @self.pg.production('STRINGS : STRINGS PLUS STRING')
+        def program_production(p):
+
+            return Token(p[0].value + "+" + p[2].value)
+        @self.pg.production('STRINGS : STRING')
+        def program_production(p):
+            return Token(p[0].value)
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)
