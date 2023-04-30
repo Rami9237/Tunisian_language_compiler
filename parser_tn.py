@@ -74,7 +74,7 @@ class Parser():
                 exec(instruction.value)      
         for item in denom:
             if (eval(item) == 0):
-                raise ArithmeticError('Division par zéro')
+                raise ZeroDivisionError('Division par zéro')
     def parse(self):
         def program(p):
 
@@ -292,5 +292,6 @@ class Parser():
         def program_production(p):
             return None
         @self.pg.error
+        
         def error_handler(token):
             raise ValueError(token)
