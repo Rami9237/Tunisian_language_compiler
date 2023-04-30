@@ -1,6 +1,7 @@
 from rply import ParserGenerator
 from ast_tn import Divide, Number, Sum, Sub, Print,Token,Instruction
 import re
+import io,sys
 
 class Parser():
     def __init__(self,code):
@@ -39,6 +40,7 @@ class Parser():
         self.vartypes = {}
         self.operations = []
     def get_parser(self):
+
         return self.pg.build()
     def checkTypes(self,types,operators):
         if (types.count(types[0]) == len(types)):
@@ -66,7 +68,7 @@ class Parser():
                 if code[i] == "}":
                     output = output +"\n"
                     indentcount = indentcount - 1
-                    begin_index = i+1
+                    begin_index = i + 1
             return output    
     def checkDiv(self,instructions,denom):
         for instruction in reversed(instructions):
@@ -74,7 +76,8 @@ class Parser():
                 exec(instruction.value)      
         for item in denom:
             if (eval(item) == 0):
-                raise ZeroDivisionError('Division par zéro')
+                err = "'Dividing By 0 is not allowed'"
+                return None,None,err
     def parse(self):
         def program(p):
 
@@ -100,8 +103,9 @@ class Parser():
         @self.pg.production('program : CODE IDENTIFIER L_CB instr R_CB')
         def program_production(p):
             if (len(self.declarations) != 0):
-                c = ','.join(self.declarations) 
-                raise ValueError('Les variables suivantes doivent être déclarées : '+ c)
+                c = ','.join(self.declarations)
+                err = 'These variables are undeclared : '+ c
+                return "","",err
             else:
                 patternType = r'"[^"]*"|[a-zA-Z_]\w*|\d+'
                 patternOperation = r'[-+*/]'
@@ -110,13 +114,19 @@ class Parser():
                     patternType = r'"[^"]*"|[a-zA-Z_]\w*|\d+'
                     matchesType = re.findall(patternType, x)
                     matchesOperation = re.findall(patternOperation,x)
-                    for i in range(0,len(matchesType)):
-                        matchesType[i] = self.vartypes[matchesType[i]]
-                    check = self.checkTypes(matchesType,matchesOperation)
-                    if (not(check)):
-                        raise TypeError("TypeMismatch pour l'expression ",x)
+                    print(matchesType)
+                    for k in range(0,len(matchesType)):
+                        if (matchesType[k][0] == "\""):
+                            matchesType.pop(k)
+                    print(matchesType)
+                    if (len(matchesType) > 0):
+                        for i in range(0,len(matchesType)):
+                            matchesType[i] = self.vartypes[matchesType[i]]
+                        check = self.checkTypes(matchesType,matchesOperation)
+                        if (not(check)):
+                            err = "TypeMismatch for expression " + x
+                            return "","",err
                 self.checkDiv(self.instructions,self.denom)
-                indented_code = self.indent_code(self.code)
                 s2 = "{"
                 self.code = self.code.replace('aadad','')
                 self.code = self.code.replace('jomla','')
@@ -134,8 +144,14 @@ class Parser():
                         index = match.end()
                         self.code = self.code[:index-1] + ')' + self.code[index-1:] 
                         print (self.code)
-                exec(self.indent_code(self.code))
+                output = io.StringIO()
+                sys.stdout = output
+                indented_code = self.indent_code(self.code)
+                exec(indented_code)
+                result = output.getvalue()
 
+                return indented_code,result,""
+                
         @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB instr_ext')
         def program_production(p):
                 expCombine = p[1].value + '+' + p[3].value + '+' + p[5].value
@@ -194,7 +210,7 @@ class Parser():
             self.vartypes[p[1].value] = 'INTEGER'
             if(exists(self.declarations,p[1].value)):
                 self.declarations.remove(p[1].value)
-            self.instructions.append(p[1].value + "= 0")
+            self.instructions.append(Instruction(p[1].value + "= 0","decl"))
         @self.pg.production('instr : ')
         def program_production(p):
             return None
@@ -292,6 +308,5 @@ class Parser():
         def program_production(p):
             return None
         @self.pg.error
-        
         def error_handler(token):
-            raise ValueError(token)
+            raise ValueError("Erreur : token "+token.getstr() + " à la ligne " + str(token.source_pos.lineno)+ " col "+str(token.source_pos.colno))

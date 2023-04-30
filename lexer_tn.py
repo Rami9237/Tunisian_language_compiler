@@ -22,8 +22,6 @@ class Lexer():
       
         # for
         self.lexer.add('FOR',r'karrer')
-        # while
-        self.lexer.add('while',r'madem')
         # int
         self.lexer.add('aadad',r'aadad')
         # string
