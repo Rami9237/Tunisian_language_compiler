@@ -11,7 +11,7 @@
             <v-col :cols="12" :md="5">
               <div class="textarea-cont" >
                 <h2 class="green-dark">Input</h2>
-                <v-textarea v-model="text1" label="Tunisian Code" variant="outlined" color="green darken-2" :no-resize="true"></v-textarea>
+                <v-textarea  v-model="text1" label="Tunisian Code" variant="outlined" color="green darken-2" :no-resize="true"></v-textarea>
               </div>    
             </v-col>
             </Transition>
@@ -22,12 +22,28 @@
             <v-col :cols="12" :md="5">
               <div class="textarea-cont">
                 <h2 class="green-dark">Output</h2>
-                <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true" auto-grow height="200"></v-textarea>
+                <v-textarea v-model="text2" label="Python Code" color="green darken-2" variant="outlined" :no-resize="true"></v-textarea>
 
               </div>
+
             </v-col>
           </Transition>
           </v-row>
+          <div v-if="showOP">
+                Output:
+              <v-hover v-slot="{ isHovering }" v-if="!error">
+                <v-card :elevation="isHovering ? 24 : 6" class="mx-auto pa-6" v-for="substring,key in substrings" :key="key">
+                  <v-chip class="ma-2" color='green' text-color="white">{{ key }}</v-chip>
+                  {{substring}}    
+                </v-card>
+              </v-hover>
+              <v-hover v-slot="{ isHovering }" v-else>
+                <v-card :elevation="isHovering ? 24 : 6" class="mx-auto pa-6">
+                  <v-chip class="ma-2" color='red' text-color="white">{{ 0 }}</v-chip>
+                  {{error}}    
+                </v-card>
+              </v-hover>
+              </div>
         </v-container>
     </div>
     </v-main>
@@ -49,6 +65,10 @@ export default {
     text1 : "",
     text2 : "",
     show : false,
+    showOP : false,
+    output : "",
+    substrings : "",
+    error : null,
   }),
   mounted(){
     this.show = true;
@@ -62,7 +82,18 @@ export default {
       const data = { code: this.text1 }; // Construct the data to be sent to the server
       axios.post(path, data) // Send the HTTP POST request to the server
         .then((res) => {
-          this.text2 = res.data; // Set the response data to the 'text2' data property
+          if(res.data.err == ""){
+            this.error = null;
+            this.text2 = res.data.code; // Set the response data to the 'text2' data property
+            this.output = res.data.result;
+            this.substrings = this.output.split('\n');
+            this.substrings = this.substrings.filter(substring => substring != "")
+          }
+          else{
+            this.error = res.data.err;
+            
+          }
+          this.showOP = true;
         })
         .catch((error) => {
           console.error(error);
@@ -120,6 +151,11 @@ export default {
 .slide-fade-left-enter-active{
   transition :  1s;
 }
-
-
+@font-face {
+    font-family:"MKPRO";
+    src: url("../Fonts/FontFont_FF.Mark.Pro.Light.ttf");
+}
+*{
+  font-family: "MKPRO";
+}
 </style>
