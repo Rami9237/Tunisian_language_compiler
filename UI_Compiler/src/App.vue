@@ -5,6 +5,8 @@
       <v-img src="@/assets/blob.svg" class="abs-fix"/>
       <div class="d-flex justify-center align-items-center min-h-100-vh flex-column">
         <h1>Type in your <span class="green-dark">code !</span> </h1>
+        
+        
         <v-container>
           <v-row>
             <Transition  name="slide-fade-right" appear>
