@@ -13,7 +13,7 @@ def code_compiler(text_input):
     lexer = Lexer().get_lexer()
     tokens = lexer.lex(text_input)
     pg = Parser()
-    pg.parse()
+    pg.parse(text_input)
     parser = pg.get_parser()
     return parser.parse(tokens)
    

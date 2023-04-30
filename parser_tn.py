@@ -3,7 +3,8 @@ from ast_tn import Divide, Number, Sum, Sub, Print,Token,Instruction
 import re
 
 class Parser():
-    def __init__(self):
+    def __init__(self,code):
+        self.code = code
         self.pg = ParserGenerator(
             # A list of all token names accepted by the parser.
             ['print',
@@ -29,8 +30,9 @@ class Parser():
              'STRING',
              'TO',
              'FROM'
-            ]
-        )
+            ],
+            
+        )   
         self.declarations = []
         self.instructions = []
         self.denom = []
@@ -48,7 +50,24 @@ class Parser():
             else:
                 return True
         else:
-            return False        
+            return False    
+    def indent_code(self,code):
+            indentcount=0
+            begin_index = 0
+            output = ""
+            for i in range(0,len(code)):
+                if code[i] == ";":
+                    output = output + ('\t'*indentcount) + code[begin_index:i].strip() +"\n"
+                    begin_index = i+1
+                if code[i] == "{":
+                    output = output + ('\t'*indentcount) + code[begin_index:i].strip() +":\n"
+                    indentcount+=1
+                    begin_index = i+1
+                if code[i] == "}":
+                    output = output +"\n"
+                    indentcount = indentcount - 1
+                    begin_index = i+1
+            return output    
     def checkDiv(self,instructions,denom):
         for instruction in reversed(instructions):
             if (instruction.itype == 'decl'):
@@ -58,6 +77,7 @@ class Parser():
                 raise ArithmeticError('Division par zéro')
     def parse(self):
         def program(p):
+
             return Print(p[2])
         
         def expression(p):
@@ -95,19 +115,28 @@ class Parser():
                     check = self.checkTypes(matchesType,matchesOperation)
                     if (not(check)):
                         raise TypeError("TypeMismatch pour l'expression ",x)
-                self.checkDiv(self.instructions,self.denom);
-                c = 0
-                code = ""
-                tabs = ""
-                while (len(self.instructions) != 0 ):
-                    x = self.instructions.pop()
-                    code = code + tabs + x.value + "\n"
-                    li = list(x.value.split(" "))
-                    if (li[0] == "for" or li[0] == "if"):
-                        tabs = tabs + " \t "
-                exec(code)
+                self.checkDiv(self.instructions,self.denom)
+                indented_code = self.indent_code(self.code)
+                s2 = "{"
+                self.code = self.code.replace('aadad','')
+                self.code = self.code.replace('jomla','')
+                self.code = self.code.replace('ken','if')
+                self.code = self.code.replace('karrer','for')
+                self.code = self.code.replace('men','in range(')
+                self.code = self.code.replace('ila',',')
+                self.code = self.code.replace('ekteb','print')
+                print(self.code)
+                self.code = self.code[self.code.index(s2) + len(s2) :]
+                match = True
+                while(match):
+                    match = re.search(r"range\(\s*\w*\s*,\s*\w*\s*[\{]", self.code)
+                    if match:
+                        index = match.end()
+                        self.code = self.code[:index-1] + ')' + self.code[index-1:] 
+                        print (self.code)
+                exec(self.indent_code(self.code))
 
-        @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB')
+        @self.pg.production('instr : FOR IDENTIFIER FROM factor TO factor L_CB instr R_CB instr_ext')
         def program_production(p):
                 expCombine = p[1].value + '+' + p[3].value + '+' + p[5].value
                 pattern = r'_?[a-zA-Z]+[0-9a-zA-Z]*'
@@ -117,8 +146,7 @@ class Parser():
                     if(not(exists(self.declarations,variable))):
                         self.declarations.insert(0,variable)
                 self.instructions.append(Instruction("for " + p[1].value + " in range("+p[3].value+","+p[5].value+"):","ref"))
-
-        @self.pg.production('instr : if LPAREN expression COMPARE expression RPAREN L_CB instr R_CB')
+        @self.pg.production('instr : if LPAREN expression COMPARE expression RPAREN L_CB instr R_CB instr_ext')
         def program_production(p):
             self.operations.append(p[2].value)
             self.operations.append(p[4].value)
@@ -130,7 +158,7 @@ class Parser():
                 if(not(exists(self.declarations,variable))):
                     self.declarations.insert(0,variable)
             self.instructions.append(Instruction("if (" + p[2].value + "==" + p[4].value + "):","ref"))
-        @self.pg.production('instr : if LPAREN expression DIFFERENT expression RPAREN L_CB instr R_CB')
+        @self.pg.production('instr : if LPAREN expression DIFFERENT expression RPAREN L_CB instr R_CB instr_ext')
         def program_production(p):
             self.operations.append(p[2])
             self.operations.append(p[4])
@@ -142,10 +170,10 @@ class Parser():
                 if(not(exists(self.declarations,variable))):
                     self.declarations.insert(0,variable)
             self.instructions.append(Instruction("if (" + p[2].value + "!=" + p[4].value + "):","ref"))
-        @self.pg.production('instr : if LPAREN STRINGS COMPARE STRINGS RPAREN L_CB instr R_CB')
+        @self.pg.production('instr : if LPAREN STRINGS COMPARE STRINGS RPAREN L_CB instr R_CB instr_ext')
         def program_production(p):
             self.instructions.append(Instruction("if (" + p[2].value + "==" + p[4].value + "):","ref"))
-        @self.pg.production('instr : if LPAREN STRINGS DIFFERENT STRINGS RPAREN L_CB instr R_CB')
+        @self.pg.production('instr : if LPAREN STRINGS DIFFERENT STRINGS RPAREN L_CB instr R_CB instr_ext')
         def program_production(p):
             self.instructions.append(Instruction("if (" + p[2].value + "!=" + p[4].value + "):","ref"))
         @self.pg.production('instr : IDENTIFIER AFFECT expression SEMICOLON instr')
@@ -183,7 +211,7 @@ class Parser():
                     self.declarations.insert(0,variable)
             if(exists(self.declarations,p[1].value)):
                 self.declarations.remove(p[1].value)        
-            self.instructions.append(Instruction(p[1].value + "=" + p[3].value,"decl"))
+            self.instructions.append(Instruction(p[1].value + "=" + p[3].value,"decl")) 
         @self.pg.production('instr : string IDENTIFIER AFFECT expression1 SEMICOLON instr')
         def program_production(p):
             exp = p[3].value
@@ -260,6 +288,9 @@ class Parser():
         @self.pg.production('STRINGS : STRING')
         def program_production(p):
             return Token(p[0].value)
+        @self.pg.production('instr_ext : instr')
+        def program_production(p):
+            return None
         @self.pg.error
         def error_handler(token):
             raise ValueError(token)
