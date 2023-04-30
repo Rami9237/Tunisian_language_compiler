@@ -8,25 +8,40 @@
         <v-container>
           <v-row>
             <Transition  name="slide-fade-right" appear>
-            <v-col :cols="12" :md="5">
-              <div class="textarea-cont" >
-                <h2 class="green-dark">Input</h2>
-                <v-textarea v-model="text1" label="Tunisian Code" variant="outlined" color="green darken-2" :no-resize="true"></v-textarea>
-              </div>    
-            </v-col>
+              <v-col :cols="12" :md="5" :row-span="2">
+                <div class="textarea-cont" >
+                  <h2 class="green-dark">Input</h2>
+                  <v-textarea v-model="text1" label="Tunisian Code" variant="outlined" color="green darken-2" :no-resize="true"></v-textarea>
+                </div>    
+              </v-col>
             </Transition>
             <v-col :cols="12" :md="2" class="d-flex align-items-center">
-              <v-btn block rounded="xl" size="x-large" color="green darken-2" @click="compile_input">Convert <v-icon icon="mdi-arrow-right"></v-icon></v-btn>
+              <v-btn block rounded="xl" size="x-large" color="green darken-2" @click="compile_input">Execute <v-icon icon="mdi-arrow-right"></v-icon></v-btn>
             </v-col>
             <Transition name="slide-fade-left" appear>
-            <v-col :cols="12" :md="5">
-              <div class="textarea-cont">
-                <h2 class="green-dark">Output</h2>
-                <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true" auto-grow height="200"></v-textarea>
+              <v-col :cols="12" :md="5">
+                <div class="textarea-cont">
+                  <h2 class="green-dark">Output</h2>
+                  <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true" auto-grow height="200"></v-textarea>
 
-              </div>
+                </div>
+              </v-col>
+            </Transition>
+          </v-row>
+          <v-row>
+            <v-col></v-col>
+            <v-col :cols="12" :md="2" class="d-flex align-items-center">
+              <v-btn block rounded="xl" size="x-large" color="green darken-2" @click="read_input">Convert <v-icon icon="mdi-arrow-right"></v-icon></v-btn>
             </v-col>
-          </Transition>
+            <Transition name="slide-fade-left" appear>
+              <v-col :cols="12" :md="5">
+                <div class="textarea-cont">
+                  <h2 class="green-dark">Output</h2>
+                  <v-textarea v-model="text2" label="Common Code" variant="outlined" :no-resize="true" auto-grow height="200"></v-textarea>
+
+                </div>
+              </v-col>
+            </Transition>
           </v-row>
         </v-container>
     </div>
@@ -34,6 +49,7 @@
   
   </v-app>
 </template>
+
 
 <script>
 import Nav from './components/Nav.vue'
@@ -59,6 +75,21 @@ export default {
       console.log("Please enter text to be executed first");
     } else {
       const path = 'http://127.0.0.1:5000/read_input';
+      const data = { code: this.text1 }; // Construct the data to be sent to the server
+      axios.post(path, data) // Send the HTTP POST request to the server
+        .then((res) => {
+          this.text2 = res.data; // Set the response data to the 'text2' data property
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  },
+  read_input() {
+    if (this.text1 === "") {
+      console.log("Please enter text to be executed first");
+    } else {
+      const path = 'http://127.0.0.1:5000/read_code';
       const data = { code: this.text1 }; // Construct the data to be sent to the server
       axios.post(path, data) // Send the HTTP POST request to the server
         .then((res) => {

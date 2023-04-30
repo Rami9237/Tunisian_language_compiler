@@ -7,7 +7,6 @@ class Lexer():
 
     def _add_tokens(self):
         # Print
-<<<<<<< HEAD
         self.lexer.add('print', r'ekteb')
         # if else else if
         self.lexer.add('if',r'ken')
@@ -33,28 +32,6 @@ class Lexer():
         # do while
         # Number
         self.lexer.add('NUMBER', r'\d+')
-=======
-        self.lexer.add('EKTEB', r'ekteb')
-        # if else else if
-        self.lexer.add('KEN',r'ken')
-        self.lexer.add('MEKENECH_KEN',r'mekenech\s+ken')
-        self.lexer.add('MEKENECH',r'mekenech')
-        # for
-        self.lexer.add('KARRER',r'karrer')
-        # while
-        self.lexer.add('WHILE',r'while')
-        # int
-        self.lexer.add('3DAD',r'3dad')
-        # string
-        self.lexer.add('JOMLA',r'jomla')
-        # do while
-        self.lexer.add('3AWED_MEDEM', r'do\s+while')
-        # Number
-        self.lexer.add('NUMBER', r'\d+')
-        self.lexer.add('STRING', r'"[^"]*"|\'[^\']*\'')
-
-
->>>>>>> main
         self.lexer.add('LPAREN', r'\(')
         self.lexer.add('RPAREN', r'\)')
         self.lexer.add('SEMICOLON', r'\;')

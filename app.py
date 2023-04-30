@@ -20,7 +20,7 @@ def code_compiler(text_input):
 
 
 @app.route('/read_input',methods=['POST'])
-def read():
+def read_input():
     data = request.json 
     print(data.get)
     language_input = data.get('code') # Get the value of the 'code' property from the JSON object
@@ -30,7 +30,7 @@ def read():
     else:
         return 'Please enter the code you want to convert.'
 @app.route('/read_code',methods=['POST'])
-def read():
+def read_code():
     data = request.json 
     print(data.get)
     language_input = data.get('code') # Get the value of the 'code' property from the JSON object
