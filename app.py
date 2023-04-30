@@ -25,9 +25,8 @@ def read_input():
     print(data.get)
     language_input = data.get('code') # Get the value of the 'code' property from the JSON object
     if language_input:
-        code_py,result,err = code_compiler(language_input)
-        data = {"code" : code_py ,"result" : result,"err":err}
-        return jsonify(data)
+        result = code_compiler(language_input)
+        return result
     else:
         return 'Please enter the code you want to convert.'
 if __name__ == '__main__':
